@@ -1,0 +1,118 @@
+﻿@model DataApiService.Models.Machine
+
+
+<div class="box catalog__head-row">
+    <span style="margin-top: 30px;" class="catalog__label">Отправка команды на терминал</span>
+    <p></p>
+    <div class="container">
+        <div class="col-md-4">
+            <form asp-action="SendTerminalRequest">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group" hidden="hidden">
+                    <label asp-for="Machine_id" class="catalog__label"></label>
+                    <input asp-for="Machine_id" class="catalog__input" />
+                    <span asp-validation-for="Machine_id" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="catalog__label">Автомат</label>
+                    @{ var currenMachine = (SelectListItem)ViewBag.currentMachine;}
+                    <select asp-for="Machine_name" asp-items="ViewBag.machineList" style="width: 100%; height: 50px; margin: 20px;">
+                        <option selected="selected" value="@currenMachine.Value">@currenMachine.Text</option>
+                    </select>
+                    <span asp-validation-for="Machine_name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="catalog__label">ID Терминала</label>
+                    <input asp-for="Terminal_id" class="form-control" style="width: 100%; height: 50px; margin: 20px;" />
+                    <span asp-validation-for="Terminal_id" class="text-danger">
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label class="catalog__label">Команда</label>
+                    <select name="command_id" asp-items="ViewBag.commandSelectList" style="width: 100%; height: 50px; margin: 20px;">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+                <div id="body_name" style="width: 100%; display: flex; margin-left: -20px;">
+                    <div id="divname1" class="pseudoselect col-xs-12 col-sm-4 col-md-3" hidden="hidden">
+                        <span id="spanname1" class="catalog__label"></span>
+                        <input class="catalog__input" id="parameter1" name="parameter1" type="text" value="">
+                    </div>
+                    <div id="divname2" class="pseudoselect col-xs-12 col-sm-4 col-md-3" hidden="hidden">
+                        <span id="spanname2" class="catalog__label">
+                        </span>
+                        <input class="catalog__input" id="parameter2" name="parameter2" type="text" value="">
+                    </div>
+                    <div id="divname3" class="pseudoselect col-xs-12 col-sm-4 col-md-3" hidden="hidden">
+                        <span id="spanname3" class="catalog__label"></span>
+                        <input class="catalog__input" id="parameter3" name="parameter3" type="text" value="">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="catalog__body">
+    <div class="table-wrapper">
+        <table class="catalog__table">
+            <thead>
+                <tr>
+                    <th class="sort" data-column="0" width="60">№</th>
+                    <th class="sort" data-column="1">Дата и время</th>
+                    <th class="sort" data-column="2">Команда</th>
+                    <th class="sort" data-column="3">Параметр 1</th>
+                    <th class="sort" data-column="4">Параметр 2</th>
+                    <th class="sort" data-column="5">Параметр 3</th>
+                    <th class="sort" data-column="6">Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ 
+                    var i = 1;
+                    
+                }
+                @foreach (var item in ViewBag.commandForCurrentTerm as IEnumerable<DataApiService.Models.CommandListItem>)
+                {
+                    var commandName = (ViewBag.commandScriptList as IEnumerable<DataApiService.Models.Command>).FirstOrDefault(x => x.Id == item.command_id).Name;
+
+                    <tr>
+                        <td>@i @{ i++; }</td>
+                        <td>
+                            <p>@item.time_created</p>
+                            <p><small><em></em></small></p>
+                        </td>
+                        <td>@commandName</td>
+                        <td>@item.parameter1</td>
+                        <td>@item.parameter2</td>
+                        <td>@item.parameter3</td>
+                        <td>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var selectedDates = @Html.Raw(Json.Serialize(ViewBag.commandScriptList));
+        console.log(selectedDates);
+        $("select[name=command_id]").on('change', function (e) {
+            var selectValue = $(this).val() - 1;
+
+            console.log(selectedDates[selectValue], selectValue);
+            for (var i = 1; i <= 3; i++) {
+                if (selectedDates[selectValue]['parameter_name' + i] != null) {
+                    $('#spanname' + i).text(selectedDates[selectValue]['parameter_name' + i]);
+                    $('#parameter' + i).val(selectedDates[selectValue]['parameter_default_value' + i])
+                    $('#divname' + i).show();
+                } else {
+                    $('#divname' + i).hide();
+                }
+            }
+        })
+    </script>
+}

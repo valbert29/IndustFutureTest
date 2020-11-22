@@ -26,7 +26,7 @@ namespace WebServer.Controllers
         /// <summary>
         /// Список всех событий по умолчанию
         /// </summary>
-        /// <returns></returns>
+        /// <returns></returns> 
         public async Task<IActionResult> Index()
         {
             //Заполняем дроп лист выбора автоматов
@@ -81,14 +81,13 @@ namespace WebServer.Controllers
         {
             //Запрос машин
             var machines =await _dataManager.GetItems<Machine>("machines");
-
             //Мапинг в дроп лист
             var resultList = machines.Select(x => new SelectListItem( $"{x.Machine_name} | {x.Machine_address} | {x.Machine_model}", x.Machine_id.ToString())).ToList();
-            
+
             //Значение для "Все"
-            resultList.Insert(0,new SelectListItem(" Все ",""));
-            
+            resultList.Insert(0, new SelectListItem(" Все ", ""));
+
             ViewData["Machines"] = resultList;
-        } 
+        }
     }
 }

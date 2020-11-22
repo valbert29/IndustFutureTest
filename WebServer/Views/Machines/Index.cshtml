@@ -1,0 +1,67 @@
+﻿@model IEnumerable<DataApiService.Models.Machine>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="box catalog__head-row">
+    <a asp-action="Create" asp-controller="Machines" class="btn catalog__btn blue add_item ">Добавить Автомат</a>
+</div>
+<table class="catalog__table">
+    <thead>
+        <tr>
+            <th class="sort" asp data-column="0" width="60">№</th>
+            <th class="sort" data-column="1">Автомат</th>
+            <th class="sort no_arrow" data-column="2" width="150">ID Терминала</th>
+            <th class="sort no_arrow" data-column="3" width="250">Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ var i = 1;}
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@i @{i++;}</td>
+            <td>
+                <p>@item.Machine_name</p>
+                <p><small><em>@item.Machine_address</em></small></p>
+                <p><small>@item.Machine_model</small></p>
+            </td>
+            <td>@item.Terminal_id</td>
+            <td>
+                <div style="display: flex;padding: 10px 0 0;align-items: baseline;justify-content: space-around;">
+                    <span class="classic-label__text">
+                        <a asp-controller="Machines" asp-action="Edit" asp-route-id="@item.Machine_id">
+                            <img data-action="edit" class="edit_item" style="cursor: pointer;" src="/images/edit.png" alt="">
+                            <span class="tooltip">Изменить</span>
+                        </a>
+                        
+                    </span>
+                    <span class="classic-label__text">
+                        <a asp-controller="Machines" asp-action="Delete" asp-route-id="@item.Machine_id">
+                            <img data-action="delete" class="delete_item" style="cursor: pointer;" src="/images/delete.png" alt="">
+                            <span class="tooltip">Удалить</span>
+                        </a>
+                    </span>
+                    <span class="classic-label__text">
+                        <img data-action="matrix" class="edit_item" style="cursor: pointer;" src="/images/matrix.png" alt="">
+                        <span class="tooltip right">Товарная матрица</span>
+                    </span>
+
+                    <span class="classic-label__text">
+                        <a asp-controller="Machines" asp-action="terminal" asp-route-id="@item.Machine_id">
+                            <img data-action="terminal" data-name="terminal" class="edit_item" style="cursor: pointer;" src="/images/send.png" alt="">
+                            <span class="tooltip right">Отправить команду на терминал</span>
+                        </a>
+                    </span>
+                </div>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts
+{
+    
+}

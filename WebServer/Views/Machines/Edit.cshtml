@@ -1,0 +1,58 @@
+﻿@model DataApiService.Models.Machine
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<div class="box catalog__head-row">
+    <span style="margin-top: 30px;" class="catalog__label">Редактирование автомата</span>
+    <div class="edite_add_block">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group" hidden="hidden">
+                    <label asp-for="Machine_id" class="catalog__label"></label>
+                    <input asp-for="Machine_id" class="catalog__input" />
+                    <span asp-validation-for="Machine_id" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="catalog__label">Наименование</label>
+                    <input asp-for="Machine_name" class="catalog__input" />
+                    <span asp-validation-for="Machine_name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class ="catalog__label">Адрес</label>
+                        <input asp-for="Machine_address" class="catalog__input" />
+                        <span asp-validation-for="Machine_address" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="catalog__label">Модель</label>
+                    <select asp-for="Machine_model" asp-items="ViewBag.machineModels" style="width: 100%;height: 50px; margin: 20px;">
+                        <option selected="selected">@Model.Machine_model</option>
+                    </select>
+                    <span asp-validation-for="Machine_model" class="text-danger"></span>
+                </div>
+                <div class="form-group" hidden="hidden">
+                    <label asp-for="Model_id" class="catalog__label"></label>
+                    <input asp-for="Model_id" class="form-control" />
+                    <span asp-validation-for="Model_id" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="catalog__label">ID Терминала</label>
+                    <select asp-for="Terminal_id" asp-items="ViewBag.terminalIds" style = "width: 100%;height: 50px; margin: 20px;">
+                        <option selected="selected">@Model.Terminal_id</option>
+                    </select>
+                    <span asp-validation-for="Terminal_id" class="text-danger">
+                    </span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

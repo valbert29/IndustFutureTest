@@ -5,6 +5,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using DataApiService.Models;
 using DataApiService.Utils;
 
 namespace DataApiService
@@ -30,6 +31,7 @@ namespace DataApiService
         /// <param name="password">Пароль</param>
         /// <returns>Устанавливает токен идентификации, или бросает ошибку в случае отказа сервера</returns>
         void Auth(string login, string password);
+        public bool SendCustomRequest(string pointName, Dictionary<string, string> paramDict = null, object machine = null, string method = "POST");
     }
 
     /// <summary>
@@ -203,6 +205,18 @@ namespace DataApiService
 
         }
 
-
+        public bool SendCustomRequest(string pointName, Dictionary<string, string> paramDict = null, object machine = null, string method = "POST")
+        {
+            string urlService = _options.GetUrlApiService(pointName);
+            var paramString = (paramDict ?? new Dictionary<string, string>()).ToGetParameters();
+            var url = new Uri($"{urlService}{paramString}");
+            var jsonObj = JsonSerializer.Serialize(machine);
+            if(machine != null)
+            {
+                _client.Headers[HttpRequestHeader.ContentType] = "application/json-patch+json";
+            }
+            var resp = _client.UploadString(url, method, jsonObj);
+            return resp == "";
+        }
     }
 }

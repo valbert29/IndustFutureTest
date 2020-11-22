@@ -1,0 +1,41 @@
+﻿@model DataApiService.Models.Machine
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div>
+    <h4>Удаление автомата</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Наименование
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Machine_name)
+        </dd>
+        <dt class="col-sm-2">
+            Адрес
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Machine_address)
+        </dd>
+        <dt class="col-sm-2">
+            Модель
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Machine_model)
+        </dd>
+        <dt class="col-sm-2">
+            ID Терминала
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Terminal_id)
+        </dd>
+    </dl>
+    
+    <form asp-action="DeleteConfirmed" asp-route-id="@Model.Machine_id">
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

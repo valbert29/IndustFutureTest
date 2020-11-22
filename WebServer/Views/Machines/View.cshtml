@@ -1,0 +1,71 @@
+﻿@model IEnumerable<DataApiService.Models.Machine>
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Machine_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Machine_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Machine_model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Model_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Machine_address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Terminal_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Owner_id)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Machine_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Machine_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Machine_model)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Model_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Machine_address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Terminal_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Owner_id)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
