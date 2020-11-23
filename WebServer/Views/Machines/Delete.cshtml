@@ -5,7 +5,7 @@
 }
 
 <div>
-    <h4>Удаление автомата</h4>
+    <span style="margin-top: 30px;" class="catalog__label">Удаление автомата</span>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -33,9 +33,9 @@
             @Html.DisplayFor(model => model.Terminal_id)
         </dd>
     </dl>
-    
+
     <form asp-action="DeleteConfirmed" asp-route-id="@Model.Machine_id">
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <button type="submit" value="Delete" class="btn btn-danger">Удалить</button>
+        <button asp-action="Index" asp-controller="Machines" class="btn gray">Отмена</button>
     </form>
 </div>

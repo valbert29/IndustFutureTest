@@ -48,7 +48,7 @@ namespace WebServer.Controllers
         [HttpPost]
         public ActionResult Create(Machine model)
         {
-            var correctResponse = _dataManager
+            _dataManager
                 .SendCustomRequest("machines", null, model);
 
             return RedirectToAction("Index");
@@ -59,13 +59,14 @@ namespace WebServer.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var machines = await _dataManager.GetItems<Machine>("machines");
-            var machineModels =  await _dataManager.GetItems<MachineModel>("machineModels");
-            ViewBag.machineModels = new SelectList(machineModels, "machine_model_id", "machine_model_name");
+            var currentMachine = machines.FirstOrDefault(x => x.Machine_id == id);
+
+            var machineModels = await _dataManager.GetItems<MachineModel>("machineModels");
+            ViewBag.machineModelsWithoutCurrent = new SelectList(machineModels.Where(x => x.machine_model_id !=currentMachine.Model_id) , "machine_model_id", "machine_model_name");
 
             var terminalIds = await _dataManager.GetItems<int>("terminals/free");
             ViewBag.terminalIds = new SelectList(terminalIds);
 
-            var currentMachine = machines.FirstOrDefault(x => x.Machine_id == id);
 
             return View(currentMachine);
         }
@@ -73,10 +74,10 @@ namespace WebServer.Controllers
         [HttpPost]
         public IActionResult Edit(Machine model)
         {
-            var correctResponse = _dataManager
+            _dataManager
                 .SendCustomRequest($"machines/{model.Machine_id}", null, model, WebRequestMethods.Http.Put);
 
-            return correctResponse ? Redirect("/machines/") : Redirect($"machines/edit/{model.Machine_id}");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -91,10 +92,10 @@ namespace WebServer.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
 
-            var correctResponse = _dataManager
+            _dataManager
                 .SendCustomRequest($"machines/{id}", null, null, "DELETE");
 
-            return correctResponse ? Redirect("/machines/") : Redirect("/machines/delete/{id}");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -124,7 +125,7 @@ namespace WebServer.Controllers
                 .Select(
                 x => new SelectListItem($"{x.Machine_name} | {x.Machine_address} | {x.Machine_model}", x.Machine_id.ToString())
                 )
-                .Where(x=>x.Value != id.ToString()).ToList();
+                .Where(x => x.Value != id.ToString()).ToList();
             ViewBag.machineList = machineList;
 
             var commandForCurrentTerm = await _dataManager.GetItems<CommandListItem>($"terminals/{currentMachine.Terminal_id}/commands");
@@ -142,14 +143,14 @@ namespace WebServer.Controllers
             };
             for (int i = 1; i <= 3; i++)
             {
-                if(col["parameter" + i.ToString()] != "")
+                if (col["parameter" + i.ToString()] != "")
                 {
                     paramDict["parameter" + i.ToString()] = col["parameter" + i.ToString()];
                 }
             }
-            var response = _dataManager.SendCustomRequest($"terminals/{col["Terminal_id"]}/command", paramDict);
+            _dataManager.SendCustomRequest($"terminals/{col["Terminal_id"]}/command", paramDict);
 
-            return response ? Redirect("/Machine") : Redirect($"/Machines/terminal/{col["Machine_id"]}");
+            return RedirectToAction("Index");
         }
 
 
