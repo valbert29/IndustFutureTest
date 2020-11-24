@@ -101,6 +101,8 @@
                     $('#parameter' + i).val(selectedDates[selectValue]['parameter_default_value' + i])
                     $('#divname' + i).show();
                 } else {
+                    $('#spanname' + i).text('');
+                    $('#parameter' + i).val('');
                     $('#divname' + i).hide();
                 }
             }
