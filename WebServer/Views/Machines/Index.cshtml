@@ -1,67 +1,115 @@
 ﻿@model IEnumerable<DataApiService.Models.Machine>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Caption"] = "Автоматы";
 }
 
-<div class="box catalog__head-row">
-    <a asp-action="Create" asp-controller="Machines" class="btn catalog__btn blue add_item ">Добавить Автомат</a>
-</div>
-<table class="catalog__table">
-    <thead>
-        <tr>
-            <th class="sort" asp data-column="0" width="60">№</th>
-            <th class="sort" data-column="1">Автомат</th>
-            <th class="sort no_arrow" data-column="2" width="150">ID Терминала</th>
-            <th class="sort no_arrow" data-column="3" width="250">Действия</th>
-        </tr>
-    </thead>
-    <tbody>
-        @{ var i = 1;}
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>@i @{i++;}</td>
-            <td>
-                <p>@item.Machine_name</p>
-                <p><small><em>@item.Machine_address</em></small></p>
-                <p><small>@item.Machine_model</small></p>
-            </td>
-            <td>@item.Terminal_id</td>
-            <td>
-                <div style="display: flex;padding: 10px 0 0;align-items: baseline;justify-content: space-around;">
-                    <span class="classic-label__text">
-                        <a asp-controller="Machines" asp-action="Edit" asp-route-id="@item.Machine_id">
-                            <img data-action="edit" class="edit_item" style="cursor: pointer;" src="/images/edit.png" alt="">
-                            <span class="tooltip">Изменить</span>
-                        </a>
-                        
-                    </span>
-                    <span class="classic-label__text">
-                        <a asp-controller="Machines" asp-action="Delete" asp-route-id="@item.Machine_id">
-                            <img data-action="delete" class="delete_item" style="cursor: pointer;" src="/images/delete.png" alt="">
-                            <span class="tooltip">Удалить</span>
-                        </a>
-                    </span>
-                    <span class="classic-label__text">
-                        <img data-action="matrix" class="edit_item" style="cursor: pointer;" src="/images/matrix.png" alt="">
-                        <span class="tooltip right">Товарная матрица</span>
-                    </span>
-
-                    <span class="classic-label__text">
-                        <a asp-controller="Machines" asp-action="terminal" asp-route-id="@item.Machine_id">
-                            <img data-action="terminal" data-name="terminal" class="edit_item" style="cursor: pointer;" src="/images/send.png" alt="">
-                            <span class="tooltip right">Отправить команду на терминал</span>
-                        </a>
-                    </span>
+<div class="sidebar-page__content">
+    <div class="edite_add_block del_formm">
+        <form asp-action="DeleteConfirmed" asp-controller="Machines" id="filterr_delete" method="post">
+            <input class="column_filt id_action_del" name="id" type="hidden">
+            <span class="catalog__label">Удалить этот автомат?</span>
+            <a class="btn catalog__btn gray">Отмена</a>
+            <button type="submit" class="btn catalog__btn delete_item_ok">Удалить</button>
+        </form>
+    </div>
+    <div class="catalog">
+        <div class="catalog__head">
+            <form action="/Machines" id="filterr" method="post">
+                <input class="column_filt" id="filter_order_num_" name="filter[order_num]" type="hidden" value="0"><input class="column_filt_sort" id="filter_order_direction_" name="filter[order_direction]" type="hidden" value="-1">
+                <div class="box catalog__head-row">
+                    <a asp-action="Create" asp-controller="Machines" class="btn catalog__btn blue add_item">Добавить +</a>
+                    <input class="catalog__input" id="filter_str_filter_" name="filter[str_filter]" placeholder="Поиск по таблице" type="search" value="">
+                    <button class="btn catalog__btn">Применить</button>
                 </div>
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+                <input name="__RequestVerificationToken" type="hidden" value="CfDJ8MVFrMu9mxtAphu1oD2iiasnjlo9c9hf44wthfpgAP5_HGpDqbQPu7SvKg4reb6dWlsSXI9ZikebugDyKXHuvQOGYU1AX7bcQyVRNXgSbXkDweJaTCqVeLYk_ycOODR_8NDXgKB2ocoVwUZ0wRhquTw_73AQG6FPu1jZ2Ph_h031k0JPDpJdGOiM-pvTAQL-VQ">
+            </form>
+        </div>
+        <div class="catalog__body">
+            <div class="table-wrapper">
+                <table class="catalog__table">
+                    <thead>
+                        <tr>
+                            <th class="sort" data-column="0" width="60">№</th>
+                            <th class="sort" data-column="1">Автомат</th>
+                            <th class="sort no_arrow" data-column="2" width="150">ID Терминала</th>
+                            <th class="sort no_arrow" data-column="3" width="250">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ var i = 1;}
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i @{i++;}</td>
+                                <td>
+                                    <p>@item.Machine_name</p>
+                                    <p><small><em>@item.Machine_address</em></small></p>
+                                    <p><small>@item.Machine_model</small></p>
+                                </td>
+                                <td>@item.Terminal_id</td>
+                                <td>
+                                    <div style="display: flex;padding: 10px 0 0;align-items: baseline;justify-content: space-around;">
+                                        <span class="classic-label__text">
+                                            <a asp-controller="Machines" asp-action="Edit" asp-route-id="@item.Machine_id">
+                                                <img data-action="edit" class="edit_item" style="cursor: pointer;" src="/images/edit.png" alt="">
+                                                <span class="tooltip">Изменить</span>
+                                            </a>
 
-@section Scripts
-{
-    
+                                        </span>
+                                        <span class="classic-label__text">
+                                            <span asp-controller="Machines" asp-action="Delete" asp-route-id="@item.Machine_id">
+                                                <img data-action="delete" data-id="@item.Machine_id" class="delete_item" style="cursor: pointer;" src="/images/delete.png" alt="">
+                                                <span class="tooltip">Удалить</span>
+                                            </span>
+                                        </span>
+                                        <span class="classic-label__text">
+                                            <img data-action="matrix" class="edit_item" style="cursor: pointer;" src="/images/matrix.png" alt="">
+                                            <span class="tooltip right">Товарная матрица</span>
+                                        </span>
+
+                                        <span class="classic-label__text">
+                                            <a asp-controller="Machines" asp-action="terminal" asp-route-id="@item.Machine_id">
+                                                <img data-action="terminal" data-name="terminal" class="edit_item" style="cursor: pointer;" src="/images/send.png" alt="">
+                                                <span class="tooltip right">Отправить команду на терминал</span>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+
+        var deleteForm = $(".del_formm");
+        var deleteInput = $(".id_action_del");
+        console.log(deleteInput);
+        console.log($(".gray"), 123);
+        $(".gray").click(function () {
+            deleteForm.hide();
+        });
+
+
+        $("img[class=delete_item]").each(function () {
+            var currentId = this.dataset.id;
+            console.log(currentId);
+            $(this).click(function () {
+
+                deleteInput.val(currentId);
+                console.log()
+                deleteForm.show();
+            });
+        });
+
+
+
+    </script>
 }

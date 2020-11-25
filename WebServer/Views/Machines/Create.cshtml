@@ -1,41 +1,67 @@
 ﻿@model DataApiService.Models.Machine
+@{ ViewData["Caption"] = "Добавление автомата"; }
+<main class="sidebar-page">
+    <div class="sidebar-page__content">
+        <div class="catalog">
+            <div class="catalog__head">
+                <form action="/Machines/Create" id="filterr" method="post">
+                    <input class="column_filt" id="action_h" name="action_h" type="hidden" value="add">
+                    <div class="box catalog__head-row">
+                        <span style="margin-top: 30px;" class="catalog__label">Добавление автомата</span>
+                        <div class="edite_add_block">
+                            <span class="catalog__label">Наименование</span>
+                            <input class="catalog__input" id="name_mashine" asp-for="Machine_name" placeholder="Введите название автомата" style="margin-bottom: 10px;" type="text" value="">
+                            <span class="catalog__label">Адрес</span>
+                            <input class="catalog__input" id="address_mashine" asp-for="Machine_address" placeholder="Укажите адрес" type="text" value="">
 
-@{
-    ViewData["Title"] = "Create";
-}
 
-<div class="catalog">
-    <div class="catalog__head">
-        <form asp-action="Create" method="post">
-            <input class="column_filt" id="action_h" name="action_h" type="hidden" value="add">
-            <div class="box catalog__head-row">
-                <span style="margin-top: 30px;" class="catalog__label">Добавление автомата</span>
-                <div class="edite_add_block">
-                    <label asp-for="Machine_name" class="catalog__label">Наименование</label>
-                    <input asp-for="Machine_name" placeholder="Введите название автомата" class="form-control" type="text" />
-                    <label asp-for="Machine_address" class="catalog__label">Адрес</label>
-                    <input asp-for="Machine_address" class="form-control" placeholder="Укажите адрес" type="text" value="" />
-                    <div class="pseudoselect catalog__select" style="position:relative;">
-                        <label asp-for="Model_id" class="catalog__label" style="margin:10px 14px; ">Модель</label>
-                        <select asp-for="Model_id" asp-items="ViewBag.machineModels" class="form-control"  >
-                            <option value="" disabled="disabled" selected="selected">Выберите Модель</option>
-                        </select>
+                            <div class="pseudoselect catalog__select" style="position:relative;">
+                                <span class="catalog__label" style="margin:10px 14px; ">Модель</span>
+                                <input asp-for="Model_id" class="id_select" id="id_model" type="hidden">
+                                <input class="pseudoselect__input" id="terminal_id" placeholder="Выберите Модель" autocomplete="off" style="margin-top: 10px;" type="text" value="">
+                                <div class="pseudoselect__dropdown custom-scroll" style="left: 0px; right: 0px; width: 100%; display: none;">
+                                    <div class="pseudoselect__current"></div>
+                                    <div class="pseudoselect__list">
+                                        @foreach (var item in ViewBag.machineModels as SelectList)
+                                        {
+                                            <li class="modelOption" data-value="@item.Value">@item.Text</li>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pseudoselect catalog__select" style="position:relative;">
+                                <span class="catalog__label" style="margin:10px 14px; ">ID Терминала</span>
+                                <input asp-for="Terminal_id" class="pseudoselect__input" id="terminal_id" placeholder="Выберите ID терминала" autocomplete="off" style="margin-top: 10px;" type="text" value="">
+                                <div class="pseudoselect__dropdown custom-scroll" style="left: 0px; right: 0px; width: 100%; display: none;">
+                                    <div class="pseudoselect__current"></div>
+                                    <div class="pseudoselect__list">
+                                        @foreach (var item in ViewBag.terminalIds as SelectList)
+                                        {
+                                            <li data-value="@item.Value">@item.Text</li>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <a asp-action="Index" class="btn catalog__btn gray">Отмена</a>
+                            <button class="btn catalog__btn">Добавить</button>
+                        </div>
                     </div>
-
-                    <div class="pseudoselect catalog__select" style="position:relative;">
-                        <label asp-for="Terminal_id" class="catalog__label" style="margin:10px 14px; ">ID Терминала</label>
-                        <select asp-for="Terminal_id" asp-items="ViewBag.terminalIds" class="form-control">
-                            <option value="" disabled="disabled" selected="selected">Выберите Терминал</option>
-                        </select>
-                    </div>
-                    <a asp-action="Index" asp-controller="Machines" class="btn catalog__btn gray">Отмена</a>
-                    <button class="btn catalog__btn">Добавить</button>
-                </div>
+                    <input name="__RequestVerificationToken" type="hidden" value="CfDJ8MVFrMu9mxtAphu1oD2iiattl1m_4aKv7iTMXvWSs9CFD7qSdsSNVFaECnNA_5I7UTSKNwpuxnJqOCHJTjhngS7HefpsSEAq-w5UgZnLrLUQlJsK5r7t0YOxGEiM_Xli4GwxCGbXUPhuMdjBhQd7S03-7LovzIDA3yrAJmC4rIOr_O_LDSRh4BlZJ-zpsbK8bA">
+                </form>
             </div>
-            <input name="__RequestVerificationToken" type="hidden" value="CfDJ8MVFrMu9mxtAphu1oD2iiaudqas79RvaivgKQBl9piVU9YM1ZJNgofFkceRrq4ri6qq7Hn5k_tLGqVw4v5OGmnUJJsZ9RFX_4gcONJlzCAIQFR4FI6QPCydUrTIEvbT2ojHaA6w61IWlWiLmJ4eySxgqVr-C8-B7qX0eQ8SF4aHjO8LWBU6iH8qGF9MsEff6rw">
-        </form>
+        </div>
     </div>
-</div>
+</main>
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var modelInput = $("#id_model");
+        $("li[class=modelOption]").each(function () {
+            var currentId = this.dataset.value;
+            $(this).click(function () {
+                modelInput.val(currentId);
+            });
+        });
+    </script>
 }

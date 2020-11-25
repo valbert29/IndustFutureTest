@@ -1,45 +1,72 @@
 ﻿@model DataApiService.Models.Machine
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Caption"] = "Редактирование автомата";
 }
 
+<main class="sidebar-page">
+    <div class="sidebar-page__content">
+        <div class="catalog">
+            <div class="catalog__head">
+                <form action="/Machines/Edit" id="filterr" method="post">
+                    <div class="box catalog__head-row">
+                        <span style="margin-top: 30px;" class="catalog__label">Редактирование автомата</span>
+                        <div class="edite_add_block">
+                            <div class="form-group" hidden="hidden">
+                                <label asp-for="Machine_id" class="catalog__label"></label>
+                                <input asp-for="Machine_id" class="catalog__input" />
+                            </div>
+                            <span class="catalog__label">Наименование</span>
+                            <input asp-for="Machine_name" class="catalog__input" id="name_mashine" placeholder="Введите название модели" style="margin-bottom: 10px;" type="text" value="@Model.Machine_name">
+                            <span class="catalog__label">Адрес</span>
+                            <input asp-for="Machine_address" class="catalog__input" id="address_mashine" placeholder="Укажите адрес" type="text" value="@Model.Machine_address">
+                            <div class="pseudoselect catalog__select" style="position:relative;">
+                                <span class="catalog__label" style="margin:10px 14px; ">Модель</span>
+                                <input asp-for="Model_id" class="id_select" id="id_model" type="hidden" value="@Model.Model_id">
+                                <input class="pseudoselect__input" asp-for="Machine_model" placeholder="Выберите Модель" autocomplete="off" style="margin-top: 10px;" type="text" value="@Model.Machine_model">
+                                <div class="pseudoselect__dropdown custom-scroll" style="left: 0px; right: 0px; width: 100%; display: none;">
+                                    <div class="pseudoselect__current">@Model.Machine_model</div>
+                                    <div class="pseudoselect__list">
+                                        @foreach (var item in ViewBag.machineModelsWithoutCurrent as SelectList)
+                                        {
+                                            <li class="modelOption" data-value="@item.Value">@item.Text</li>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
 
-<div class="catalog">
-    <div class="catalog__head">
-        <form asp-action="Edit" method="post">
-            <input class="column_filt" id="action_h" name="action_h" type="hidden" value="add">
-            <div class="box catalog__head-row">
-                <span style="margin-top: 30px;" class="catalog__label">Редактирование автомата</span>
-                <div class="edite_add_block">
-                    <div class="form-group" hidden="hidden">
-                        <label asp-for="Machine_id" class="catalog__label"></label>
-                        <input asp-for="Machine_id" class="catalog__input" />
+                            <div class="pseudoselect catalog__select" style="position:relative;">
+                                <span class="catalog__label" style="margin:10px 14px; ">ID Терминала</span>
+                                <input asp-for="Terminal_id" class="pseudoselect__input" id="terminal_id" placeholder="Выберите ID терминала" autocomplete="off" style="margin-top: 10px;" type="text" value="@Model.Terminal_id">
+                                <div class="pseudoselect__dropdown custom-scroll" style="left: 0px; right: 0px; width: 100%; display: none;">
+                                    <div class="pseudoselect__current">@Model.Terminal_id</div>
+                                    <div class="pseudoselect__list">
+                                        @foreach (var item in ViewBag.terminalIds as SelectList)
+                                        {
+                                            <li data-value="@item.Value">@item.Text</li>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <a asp-action="Index" class="btn catalog__btn gray">Отмена</a>
+                            <button class="btn catalog__btn">Сохранить</button>
+                        </div>
                     </div>
-                    <label asp-for="Machine_name" class="catalog__label">Наименование</label>
-                    <input asp-for="Machine_name" placeholder="Введите название автомата" class="form-control" type="text" />
-                    <label asp-for="Machine_address" class="catalog__label">Адрес</label>
-                    <input asp-for="Machine_address" class="form-control" placeholder="Укажите адрес" type="text" />
-                    <div class="pseudoselect catalog__select" style="position:relative;">
-                        <label asp-for="Model_id" class="catalog__label" style="margin:10px 14px; ">Модель</label>
-                        <select asp-for="Model_id" asp-items="ViewBag.machineModelsWithoutCurrent" class="form-control">
-                            <option selected="selected">@Model.Machine_model</option>
-                        </select>
-                    </div>
-                    <div class="pseudoselect catalog__select" style="position:relative;">
-                        <label asp-for="Terminal_id" class="catalog__label" style="margin:10px 14px; ">ID Терминала</label>
-                        <select asp-for="Terminal_id" asp-items="ViewBag.terminalIds" class="form-control">
-                            <option selected="selected">@Model.Terminal_id</option>
-                        </select>
-                    </div>
-                    <a asp-action="Index" asp-controller="Machines" class="btn catalog__btn gray">Отмена</a>
-                    <button class="btn catalog__btn">Сохранить</button>
-                </div>
+                </form>
             </div>
-            <input name="__RequestVerificationToken" type="hidden" value="CfDJ8MVFrMu9mxtAphu1oD2iiaudqas79RvaivgKQBl9piVU9YM1ZJNgofFkceRrq4ri6qq7Hn5k_tLGqVw4v5OGmnUJJsZ9RFX_4gcONJlzCAIQFR4FI6QPCydUrTIEvbT2ojHaA6w61IWlWiLmJ4eySxgqVr-C8-B7qX0eQ8SF4aHjO8LWBU6iH8qGF9MsEff6rw">
-        </form>
+        </div>
     </div>
-</div>
-
+</main>
 @section Scripts {
+<script>
+    var modelInput = $("input[id=id_model");
+    $("li[class=modelOption]").each(function () {
+        var currentId = this.dataset.value;
+        console.log(currentId, modelInput);
+        $(this).click(function () {
+            modelInput.val(currentId);
+            console.log(modelInput, currentId);
+        });
+    });
+</script>
 }

@@ -62,7 +62,7 @@ namespace WebServer.Controllers
             var currentMachine = machines.FirstOrDefault(x => x.Machine_id == id);
 
             var machineModels = await _dataManager.GetItems<MachineModel>("machineModels");
-            ViewBag.machineModelsWithoutCurrent = new SelectList(machineModels.Where(x => x.machine_model_id !=currentMachine.Model_id) , "machine_model_id", "machine_model_name");
+            ViewBag.machineModelsWithoutCurrent = new SelectList(machineModels.Where(x => x.machine_model_id != currentMachine.Model_id), "machine_model_id", "machine_model_name");
 
             var terminalIds = await _dataManager.GetItems<int>("terminals/free");
             ViewBag.terminalIds = new SelectList(terminalIds);
@@ -80,18 +80,9 @@ namespace WebServer.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var machines = await _dataManager.GetItems<Machine>("machines");
-
-            return View(machines.FirstOrDefault(m => m.Machine_id == id));
-        }
-
         [HttpPost]
         public ActionResult DeleteConfirmed(int id)
         {
-
             _dataManager
                 .SendCustomRequest($"machines/{id}", null, null, "DELETE");
 
@@ -126,7 +117,7 @@ namespace WebServer.Controllers
                 x => new SelectListItem($"{x.Machine_name} | {x.Machine_address} | {x.Machine_model}", x.Machine_id.ToString())
                 )
                 .Where(x => x.Value != id.ToString()).ToList();
-            ViewBag.machineList = machineList;
+            ViewBag.machineList = new SelectList(machineList, "Value", "Text");
 
             var commandForCurrentTerm = await _dataManager.GetItems<CommandListItem>($"terminals/{currentMachine.Terminal_id}/commands");
             ViewBag.commandForCurrentTerm = commandForCurrentTerm;

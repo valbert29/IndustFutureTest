@@ -1,111 +1,146 @@
 ﻿@model DataApiService.Models.Machine
 
+@{
+    ViewData["Caption"] = "Отправка команды на терминал";
+}
 
-<div class="catalog__head">
-    <form asp-action="SendTerminalRequest">
-        <div class="box catalog__head-row">
-            <span style="margin-top: 30px;" class="catalog__label">Отправка команды на терминал</span>
-            <hr />
-            <div class="edite_add_block">
-                <div class="form-group" hidden="hidden">
-                    <label asp-for="Machine_id" class="catalog__label"></label>
-                    <input asp-for="Machine_id" class="catalog__input" />
-                    <span asp-validation-for="Machine_id" class="text-danger"></span>
+<main class="sidebar-page">
+    <div class="sidebar-page__content">
+        <div class="catalog">
+            <div class="catalog__head">
+                <form asp-action="SendTerminalRequest" asp-controller="/Machines">
+                    <div class="box catalog__head-row">
+                        <span style="margin-top: 30px;" class="catalog__label">Отправка команды на терминал</span>
+                        <hr />
+                        <div class="edite_add_block">
+                            <div class="form-group" hidden="hidden">
+                                <label asp-for="Machine_id" class="catalog__label"></label>
+                                <input asp-for="Machine_id" class="catalog__input" />
+                                <span asp-validation-for="Machine_id" class="text-danger"></span>
+                            </div>
+                            <div class="pseudoselect catalog__select" style="position:relative;">
+                                @{ var currentMachine = (SelectListItem)ViewBag.currentMachine;}
+                                <span class="catalog__label" style="margin:10px 14px; ">Автомат</span>
+                                <input class="pseudoselect__input" id="machine_id" placeholder="Выберите автомат" style="margin-top: 10px;" type="text" value="@currentMachine.Text">
+                                <div class="pseudoselect__dropdown custom-scroll" style="left: 0px;right: 0px;width: 100%;z-index:10;">
+                                    <div class="pseudoselect__current">@currentMachine.Text</div>
+                                    <div class="pseudoselect__list">
+                                        @foreach (var item in ViewBag.machineList as SelectList)
+                                        {
+                                            <li class="modelOption" data-value="@item.Value">@item.Text</li>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:flex;width:100%;margin-left:-10px">
+                                <div class="pseudoselect catalog__select">
+                                    <span class="catalog__label">ID Терминала</span>
+                                    <input class="catalog__input" id="terminal_id" asp-for="Terminal_id" placeholder="ID терминала" type="text" value="@Model.Terminal_id">
+                                </div>
+
+                                <div class="pseudoselect catalog__select" style="position:relative;">
+                                    <span class="catalog__label" style="margin:10px 14px; ">Команда</span>
+                                    <input class="id_select" name="command_id" type="hidden">
+                                    <input type="text" class="pseudoselect__input" placeholder="Выберите команду" value="">
+                                    <div class="pseudoselect__dropdown custom-scroll" style="left: 0px;right: 0px;width: 100%;">
+                                        <div class="pseudoselect__current">Не выбрано</div>
+                                        <div class="pseudoselect__list">
+                                            @foreach (var item in ViewBag.commandSelectList as SelectList)
+                                            {
+                                                <li id="command" data-value="@item.Value">@item.Text</li>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="body_name" style="width: 100%; display: flex; margin-left: -20px;">
+                                <div id="divname1" class="pseudoselect catalog__select" hidden="hidden">
+                                    <span id="spanname1" class="catalog__label"></span>
+                                    <input class="catalog__input" id="parameter1" name="parameter1" type="text" value="">
+                                </div>
+                                <div id="divname2" class="pseudoselect catalog__select" hidden="hidden">
+                                    <span id="spanname2" class="catalog__label"></span>
+                                    <input class="catalog__input" id="parameter2" name="parameter2" type="text" value="">
+                                </div>
+                                <div id="divname3" class="pseudoselect catalog__select" hidden="hidden">
+                                    <span id="spanname3" class="catalog__label"></span>
+                                    <input class="catalog__input" id="parameter3" name="parameter3" type="text" value="">
+                                </div>
+                            </div>
+                            <a asp-action="Index" class="btn catalog__btn gray">Отмена</a>
+                            <button class="btn catalog__btn">Отправить</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="catalog__body">
+                <div class="table-wrapper">
+                    <table class="catalog__table">
+                        <thead>
+                            <tr>
+                                <th class="sort" data-column="0" width="60">№</th>
+                                <th class="sort" data-column="1">Дата и время</th>
+                                <th class="sort" data-column="2">Команда</th>
+                                <th class="sort" data-column="3">Параметр 1</th>
+                                <th class="sort" data-column="4">Параметр 2</th>
+                                <th class="sort" data-column="5">Параметр 3</th>
+                                <th class="sort" data-column="6">Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var i = 1;
+
+                            }
+                            @foreach (var item in ViewBag.commandForCurrentTerm as IEnumerable<DataApiService.Models.CommandListItem>)
+                            {
+                                var commandName = (ViewBag.commandScriptList as IEnumerable<DataApiService.Models.Command>).FirstOrDefault(x => x.Id == item.command_id).Name;
+
+                                <tr>
+                                    <td>@i @{ i++; }</td>
+                                    <td>
+                                        <p>@item.time_created</p>
+                                        <p><small><em></em></small></p>
+                                    </td>
+                                    <td>@commandName</td>
+                                    <td>@item.parameter1</td>
+                                    <td>@item.parameter2</td>
+                                    <td>@item.parameter3</td>
+                                    <td>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <label class="catalog__label">Автомат</label>
-                @{ var currenMachine = (SelectListItem)ViewBag.currentMachine;}
-                <select asp-for="Machine_name" asp-items="ViewBag.machineList" class="form-control">
-                    <option selected="selected" value="@currenMachine.Value">@currenMachine.Text</option>
-                </select>
-                <label class="catalog__label">ID Терминала</label>
-                <input asp-for="Terminal_id" class="form-control" />
-                <label class="catalog__label">Команда</label>
-                <select name="command_id" asp-items="ViewBag.commandSelectList" class="form-control">
-                </select>
-                
-                <div id="body_name" style="width: 100%; display: flex; margin-left: -20px;">
-                    <div id="divname1" class="pseudoselect col-xs-12 col-sm-4 col-md-3" hidden="hidden">
-                        <span id="spanname1" class="catalog__label"></span>
-                        <input class="catalog__input" id="parameter1" name="parameter1" type="text" value="" >
-                    </div>
-                    <div id="divname2" class="pseudoselect col-xs-12 col-sm-4 col-md-3" hidden="hidden">
-                        <span id="spanname2" class="catalog__label">
-                        </span>
-                        <input class="catalog__input" id="parameter2" name="parameter2" type="text" value="" >
-                    </div>
-                    <div id="divname3" class="pseudoselect col-xs-12 col-sm-4 col-md-3" hidden="hidden">
-                        <span id="spanname3" class="catalog__label"></span>
-                        <input class="catalog__input" id="parameter3" name="parameter3" type="text" value="" >
-                    </div>
-                </div>
-                <a asp-action="Index" asp-controller="Machines" class="btn catalog__btn gray">Отмена</a>
-                <button class="btn catalog__btn">Отправить</button>
             </div>
         </div>
-    </form>
-</div>
-
-<div class="catalog__body">
-    <div class="table-wrapper">
-        <table class="catalog__table">
-            <thead>
-                <tr>
-                    <th class="sort" data-column="0" width="60">№</th>
-                    <th class="sort" data-column="1">Дата и время</th>
-                    <th class="sort" data-column="2">Команда</th>
-                    <th class="sort" data-column="3">Параметр 1</th>
-                    <th class="sort" data-column="4">Параметр 2</th>
-                    <th class="sort" data-column="5">Параметр 3</th>
-                    <th class="sort" data-column="6">Статус</th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    var i = 1;
-
-                }
-                @foreach (var item in ViewBag.commandForCurrentTerm as IEnumerable<DataApiService.Models.CommandListItem>)
-                {
-                    var commandName = (ViewBag.commandScriptList as IEnumerable<DataApiService.Models.Command>).FirstOrDefault(x => x.Id == item.command_id).Name;
-
-                    <tr>
-                        <td>@i @{ i++; }</td>
-                        <td>
-                            <p>@item.time_created</p>
-                            <p><small><em></em></small></p>
-                        </td>
-                        <td>@commandName</td>
-                        <td>@item.parameter1</td>
-                        <td>@item.parameter2</td>
-                        <td>@item.parameter3</td>
-                        <td>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
     </div>
-</div>
+</main>
 
 @section Scripts {
     <script>
         var selectedDates = @Html.Raw(Json.Serialize(ViewBag.commandScriptList));
-        console.log(selectedDates);
-        $("select[name=command_id]").on('change', function (e) {
-            var selectValue = $(this).val() - 1;
-
-            console.log(selectedDates[selectValue], selectValue);
-            for (var i = 1; i <= 3; i++) {
-                if (selectedDates[selectValue]['parameter_name' + i] != null) {
-                    $('#spanname' + i).text(selectedDates[selectValue]['parameter_name' + i]);
-                    $('#parameter' + i).val(selectedDates[selectValue]['parameter_default_value' + i])
-                    $('#divname' + i).show();
-                } else {
-                    $('#spanname' + i).text('');
-                    $('#parameter' + i).val('');
-                    $('#divname' + i).hide();
+        var commandInput =
+        $("li[id=command]").each(function () {
+            var currentValue = this.dataset.value;
+            $(this).click(function () {
+                console.log(currentValue);
+                $("input[name=command_id]").val(currentValue);
+                var selectValue = currentValue - 1;
+                for (var i = 1; i <= 3; i++) {
+                    if (selectedDates[selectValue]['parameter_name' + i] != null) {
+                        $('#spanname' + i).text(selectedDates[selectValue]['parameter_name' + i]);
+                        $('#parameter' + i).val(selectedDates[selectValue]['parameter_default_value' + i])
+                        $('#divname' + i).show();
+                    } else {
+                        $('#spanname' + i).text('');
+                        $('#parameter' + i).val('');
+                        $('#divname' + i).hide();
+                    }
                 }
-            }
-        })
+            })
+        });
     </script>
 }

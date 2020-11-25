@@ -27,7 +27,7 @@ namespace DataApiService.Models
 
         [JsonPropertyName("terminal_id")]
         public int? Terminal_id { get; set; }
-        
+
         [JsonPropertyName("owner_id")]
         public int Owner_id { get; set; }
 
